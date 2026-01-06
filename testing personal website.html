@@ -415,6 +415,31 @@
                 border: 1px solid #000;
             }
         }
+
+        /* 新增：照片展示样式 */
+        .photo-preview {
+            width: 100%;
+            height: 180px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin: 1rem 0;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .media-item:hover .photo-preview {
+            border-color: var(--year-btn-active);
+            transform: scale(1.02);
+        }
+
+        .theme-status {
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: var(--text-color);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            opacity: 0.8;
+        } 
+        
     </style>
 </head>
 <body>
@@ -514,7 +539,7 @@
                     
                     <!-- // 备注：年度照片集区域 - 可在这里展示照片墙或相册 -->
                     <div class="media-item">
-                        <div class="media-item-icon">🖼️</div>
+                        <img src="mmexport1767184584078.jpg" alt="2025年珍贵瞬间" class="photo-preview">
                         <div class="media-item-title">年度照片集</div>
                         <div class="media-item-desc">
                             珍藏 96 张奋斗时刻，记录了深夜的办公室、清晨的图书馆、成功的喜悦和挫折的泪水，每一张都是成长的见证。
@@ -580,9 +605,7 @@
         <div class="footer-container">
             <h2>我的社交空间</h2>
             <div class="social-links">
-                <!-- // 备注：替换为真实的Instagram链接 -->
                 <a href="https://www.instagram.com/junjia.t?igsh=aGZ0cHVmZm5tMW9v" class="social-link">📷 Instagram</a>
-                <!-- // 备注：替换为真实的Twitter/X链接 -->
                 <a href="https://www.facebook.com/share/17hToE7AQe/" class="social-link">📘 Facebook</a>
                 <!-- // 备注：替换为真实的邮箱地址 -->
                 <a href="#" class="social-link">📧 邮箱联系</a>
