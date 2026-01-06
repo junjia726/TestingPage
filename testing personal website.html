@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>我的成长回忆录 - 响应式设计</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        /* 响应式基础变量 */
+        :root {
+            /* 断点定义 */
+            --breakpoint-sm: 576px;
+            --breakpoint-md: 768px;
+            --breakpoint-lg: 992px;
+            --breakpoint-xl: 1200px;
+            
+            /* 亮色模式 - 年轻化配色 */
+            --bg-color: #f8f9fa;
+            --text-color: #2d3748;
+            --content-bg: #ffffff;
+            --button-bg: #e8f4f8;
+            --button-text: #2d3748;
+            --year-btn-active: #4299e1;
+            --year-btn-active-text: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #9f7aea;
+            --footer-bg: #1a202c;
+            --footer-text: #ffffff;
+            --footer-link: #7dddfa;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.08);
+        }
+
+        [data-theme="dark"] {
+            /* 暗色模式 - 年轻化深色配色 */
+            --bg-color: #1a202c;
+            --text-color: #f7fafc;
+            --content-bg: #2d3748;
+            --button-bg: #4a5568;
+            --button-text: #f7fafc;
+            --year-btn-active: #63b3ed;
+            --year-btn-active-text: #ffffff;
+            --border-color: #4a5568;
+            --accent-color: #b794f4;
+            --footer-bg: #111827;
+            --footer-text: #f7fafc;
+            --footer-link: #90cdf4;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 1rem;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+
+        /* 容器响应式 */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            flex: 1;
+        }
+
+        /* 头部响应式 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--year-btn-active), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .theme-toggle {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 50px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            cursor: pointer;
+            font-size: clamp(0.85rem, 3vw, 0.95rem);
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background-color: var(--year-btn-active);
+            color: var(--year-btn-active-text);
+        }
+
+        /* 年份导航响应式 */
+        .year-nav {
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            padding-bottom: 0.8rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .year-scroll {
+            display: flex;
+            gap: 0.8rem;
+            white-space: nowrap;
+            padding-bottom: 0.5rem;
+        }
+
+        .year-btn {
+            padding: 0.7rem 1.4rem;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            cursor: pointer;
+            font-size: clamp(0.85rem, 3vw, 0.9rem);
+            font-weight: 500;
+            min-width: 90px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+        }
+
+        .year-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background-color: var(--year-btn-active);
+            color: var(--year-btn-active-text);
+            border-color: transparent;
+        }
+
+        .year-btn.active {
+            background-color: var(--year-btn-active);
+            color: var(--year-btn-active-text);
+            border-color: transparent;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* 核心修改：单一内容展示区域 - 不再使用小卡片网格 */
+        .year-content {
+            background-color: var(--content-bg);
+            border-radius: 20px;
+            padding: clamp(1.5rem, 5vw, 2.5rem);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            margin: 1.5rem 0;
+            min-height: 500px; /* 确保内容区域有足够高度 */
+        }
+
+        /* 年份内容面板 - 每次只显示一个 */
+        .year-panel {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 默认显示2026年内容 */
+        .year-panel.active {
+            display: block;
+        }
+
+        .year-panel h2 {
+            font-size: clamp(1.8rem, 6vw, 2.2rem);
+            font-weight: 700;
+            color: var(--year-btn-active);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        .year-panel-intro {
+            font-size: clamp(1rem, 3vw, 1.1rem);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+
+        .year-panel-intro strong {
+            color: var(--accent-color);
+        }
+
+        /* 媒体内容区域 - 整体布局 */
+        .media-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: clamp(1.2rem, 4vw, 2rem);
+            margin-top: 2rem;
+        }
+
+        .media-item {
+            background-color: rgba(var(--year-btn-active-rgb), 0.1);
+            border-radius: 16px;
+            padding: clamp(1.2rem, 4vw, 1.8rem);
+            border: 1px solid var(--border-color);
+            transition: all 0.4s ease;
+        }
+
+        .media-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--year-btn-active);
+        }
+
+        .media-item-icon {
+            font-size: clamp(2rem, 8vw, 2.8rem);
+            margin-bottom: 1rem;
+            color: var(--year-btn-active);
+            display: block;
+            text-align: center;
+        }
+
+        .media-item-title {
+            font-size: clamp(1.1rem, 4vw, 1.3rem);
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .media-item-desc {
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            color: var(--text-color);
+            opacity: 0.9;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .theme-status {
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: var(--text-color);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            opacity: 0.8;
+        }
+
+        /* Footer响应式 */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: clamp(1.5rem, 5vw, 2.5rem) clamp(1rem, 3vw, 1.5rem);
+            margin-top: 3rem;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+        }
+
+        .footer-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .footer-container h2 {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .social-links {
+            display: flex;
+            gap: clamp(1rem, 3vw, 1.8rem);
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            color: var(--footer-link);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            min-height: 44px;
+            align-items: center;
+        }
+
+        .social-link:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .footer-text {
+            margin-top: 2rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            opacity: 0.7;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.5rem;
+        }
+
+        /* 滚动条美化 */
+        .year-nav::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .year-nav::-webkit-scrollbar-track {
+            background: var(--button-bg);
+            border-radius: 10px;
+        }
+
+        .year-nav::-webkit-scrollbar-thumb {
+            background: var(--year-btn-active);
+            border-radius: 10px;
+        }
+
+        .year-nav::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* 媒体查询精细化适配 */
+        @media (max-width: 575.98px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .theme-toggle {
+                width: 100%;
+            }
+            
+            .year-btn {
+                min-width: 80px;
+                padding: 0.6rem 1rem;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .year-content {
+                padding: 1.2rem;
+                min-height: 400px;
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            body {
+                padding: 0.8rem;
+            }
+            
+            .media-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            body {
+                padding: 1rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            body {
+                padding: 1.5rem;
+            }
+            
+            .media-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                padding: 0;
+            }
+        }
+
+        /* 打印样式优化 */
+        @media print {
+            .theme-toggle, .year-nav, footer {
+                display: none;
+            }
+            
+            .year-content {
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>我的成长回忆录</h1>
+            <button class="theme-toggle" id="themeToggle">切换暗色模式</button>
+        </header>
+        
+        <!-- 年份导航区域 -->
+        <div class="year-nav">
+            <div class="year-scroll" id="yearScroll">
+                <button class="year-btn" data-year="2006">2006</button>
+                <button class="year-btn" data-year="2007">2007</button>
+                <button class="year-btn" data-year="2008">2008</button>
+                <button class="year-btn" data-year="2009">2009</button>
+                <button class="year-btn" data-year="2010">2010</button>
+                <button class="year-btn" data-year="2011">2011</button>
+                <button class="year-btn" data-year="2012">2012</button>
+                <button class="year-btn" data-year="2013">2013</button>
+                <button class="year-btn" data-year="2014">2014</button>
+                <button class="year-btn" data-year="2015">2015</button>
+                <button class="year-btn" data-year="2016">2016</button>
+                <button class="year-btn" data-year="2017">2017</button>
+                <button class="year-btn" data-year="2018">2018</button>
+                <button class="year-btn" data-year="2019">2019</button>
+                <button class="year-btn" data-year="2020">2020</button>
+                <button class="year-btn" data-year="2021">2021</button>
+                <button class="year-btn" data-year="2022">2022</button>
+                <button class="year-btn" data-year="2023">2023</button>
+                <button class="year-btn" data-year="2024">2024</button>
+                <button class="year-btn" data-year="2025">2025</button>
+                <button class="year-btn active" data-year="2026">2026</button>
+            </div>
+        </div>
+
+        <!-- 核心修改：单一整体内容展示区域 -->
+        <div class="year-content" id="yearContent">
+            <!-- 2026年内容面板 -->
+            <div class="year-panel active" data-year="2026">
+                <h2>2026年 · 奔赴山海</h2>
+                <div class="year-panel-intro">
+                    <p>2026年是充满收获和成长的一年，我在个人成长、职业发展和生活体验上都取得了重要的突破。这一年，我坚持记录生活的点滴，用文字、影像和视频定格每一个珍贵的瞬间。</p>
+                    <p><strong>年度关键词：</strong>学习、旅行、成长、突破、感恩、探索</p>
+                    <p>走过山川湖海，看过人间烟火，每一次的出发都是为了更好地回归。这一年的经历让我更加明白，成长不是一蹴而就的过程，而是日复一日的积累和坚持。</p>
+                </div>
+                
+                <!-- 媒体内容区域 - 整体展示 -->
+                <div class="media-section">
+                    <!-- // 备注：年度笔记区域 - 可在这里添加笔记内容或上传笔记文件 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">📝</div>
+                        <div class="media-item-title">年度笔记</div>
+                        <div class="media-item-desc">
+                            全年共记录 52 篇生活感悟，涵盖旅行见闻、读书心得、成长思考等多个维度。每一篇笔记都是对生活的真诚记录，也是对自我的深度对话。
+                        </div>
+                    </div>
+                    
+                    <!-- // 备注：年度照片集区域 - 可在这里展示照片墙或相册 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">🖼️</div>
+                        <div class="media-item-title">年度照片集</div>
+                        <div class="media-item-desc">
+                            珍藏 128 张美好瞬间，从日出到日落，从城市到山野，每一张照片都承载着独特的记忆和情感，串联起一整年的美好时光。
+                        </div>
+                    </div>
+                    
+                    <!-- // 备注：年度视频区域 - 可在这里嵌入视频或视频链接 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">🎬</div>
+                        <div class="media-item-title">年度视频</div>
+                        <div class="media-item-desc">
+                            制作 8 支生活记录短片，用动态的影像讲述生活的故事。包括旅行vlog、成长记录、技能分享等不同主题，总播放量超过10万次。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2025年内容面板 -->
+            <div class="year-panel" data-year="2025">
+                <h2>2025年 · 破茧成蝶</h2>
+                <div class="year-panel-intro">
+                    <p>2025年是充满挑战和突破的一年，面对各种困难和机遇，我选择迎难而上，最终实现了多个重要的人生目标。这一年的奋斗和坚持，让我完成了从量变到质变的跨越。</p>
+                    <p><strong>年度关键词：</strong>奋斗、突破、成就、坚持、蜕变、超越</p>
+                    <p>破茧成蝶的过程总是伴随着阵痛，但只有经历过磨砺，才能拥有更广阔的天空。这一年教会我，只要方向正确，每一步的努力都不会白费。</p>
+                </div>
+                
+                <div class="media-section">
+                    <!-- // 备注：年度笔记区域 - 可在这里添加笔记内容或上传笔记文件 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">📝</div>
+                        <div class="media-item-title">年度笔记</div>
+                        <div class="media-item-desc">
+                            共记录 48 篇成长思考，聚焦于职业发展、个人能力提升和心态调整。在奋斗的日子里，文字成为了最好的陪伴和力量源泉。
+                        </div>
+                    </div>
+                    
+                    <!-- // 备注：年度照片集区域 - 可在这里展示照片墙或相册 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">🖼️</div>
+                        <div class="media-item-title">年度照片集</div>
+                        <div class="media-item-desc">
+                            珍藏 96 张奋斗时刻，记录了深夜的办公室、清晨的图书馆、成功的喜悦和挫折的泪水，每一张都是成长的见证。
+                        </div>
+                    </div>
+                    
+                    <!-- // 备注：年度视频区域 - 可在这里嵌入视频或视频链接 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">🎬</div>
+                        <div class="media-item-title">年度视频</div>
+                        <div class="media-item-desc">
+                            制作 6 支成长记录短片，真实记录了从迷茫到清晰，从挫折到成功的全过程，希望能给同样在奋斗的人带来一些力量。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2024年内容面板 -->
+            <div class="year-panel" data-year="2024">
+                <h2>2024年 · 沉淀积累</h2>
+                <div class="year-panel-intro">
+                    <p>2024年是专注于内在成长的一年，我放慢脚步，潜心学习，在各个领域积累知识和技能。这一年没有惊天动地的成就，但每一天都在踏实前行。</p>
+                    <p><strong>年度关键词：</strong>学习、沉淀、积累、成长、专注、深耕</p>
+                    <p>厚积才能薄发，沉淀是为了更好地出发。这一年的积累，为后续的突破打下了坚实的基础，也让我更加明白慢即是快的道理。</p>
+                </div>
+                
+                <div class="media-section">
+                    <!-- // 备注：年度笔记区域 - 可在这里添加笔记内容或上传笔记文件 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">📝</div>
+                        <div class="media-item-title">年度笔记</div>
+                        <div class="media-item-desc">
+                            共记录 60 篇学习笔记，涵盖编程、设计、营销、管理等多个领域。每一篇笔记都经过精心整理，成为个人知识体系的重要组成部分。
+                        </div>
+                    </div>
+                    
+                    <!-- // 备注：年度照片集区域 - 可在这里展示照片墙或相册 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">🖼️</div>
+                        <div class="media-item-title">年度照片集</div>
+                        <div class="media-item-desc">
+                            珍藏 85 张学习瞬间，记录了在图书馆、咖啡馆、线上课程中的学习场景，每一张都见证了默默努力的时光。
+                        </div>
+                    </div>
+                    
+                    <!-- // 备注：年度视频区域 - 可在这里嵌入视频或视频链接 -->
+                    <div class="media-item">
+                        <div class="media-item-icon">🎬</div>
+                        <div class="media-item-title">年度视频</div>
+                        <div class="media-item-desc">
+                            制作 4 支技能分享视频，将所学知识整理成通俗易懂的教程，帮助了上千名学习者，也让自己的知识体系更加完善。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="theme-status" id="themeStatus">当前模式：亮色模式</p>
+    </div>
+
+    <!-- Footer区域 -->
+    <footer>
+        <div class="footer-container">
+            <h2>我的社交空间</h2>
+            <div class="social-links">
+                <!-- // 备注：替换为真实的Instagram链接 -->
+                <a href="#" class="social-link">📷 Instagram</a>
+                <!-- // 备注：替换为真实的Twitter/X链接 -->
+                <a href="#" class="social-link">🐦 Twitter/X</a>
+                <!-- // 备注：替换为真实的Facebook链接 -->
+                <a href="#" class="social-link">📘 Facebook</a>
+                <!-- // 备注：替换为真实的邮箱地址 -->
+                <a href="#" class="social-link">📧 邮箱联系</a>
+                <!-- // 备注：可添加更多社交平台链接 -->
+                <a href="#" class="social-link">📕 小红书</a>
+            </div>
+            <p class="footer-text">© 2006-2026 我的成长回忆录 | 保留所有权利</p>
+        </div>
+    </footer>
+
+    <script>
+        // 获取DOM元素
+        const themeToggle = document.getElementById('themeToggle');
+        const themeStatus = document.getElementById('themeStatus');
+        const htmlElement = document.documentElement;
+        const yearButtons = document.querySelectorAll('.year-btn');
+        const yearPanels = document.querySelectorAll('.year-panel');
+
+        // 初始化主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem('preferredTheme');
+            
+            if (savedTheme) {
+                htmlElement.setAttribute('data-theme', savedTheme);
+                updateUI(savedTheme);
+            } else {
+                const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const defaultTheme = isSystemDark ? 'dark' : 'light';
+                htmlElement.setAttribute('data-theme', defaultTheme);
+                updateUI(defaultTheme);
+            }
+        }
+
+        // 切换主题函数
+        function toggleTheme() {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('preferredTheme', newTheme);
+            updateUI(newTheme);
+        }
+
+        // 更新UI文本和按钮显示
+        function updateUI(theme) {
+            if (theme === 'dark') {
+                themeToggle.textContent = '切换亮色模式';
+                themeStatus.textContent = '当前模式：暗色模式';
+            } else {
+                themeToggle.textContent = '切换暗色模式';
+                themeStatus.textContent = '当前模式：亮色模式';
+            }
+        }
+
+        // 年份切换功能 - 适配新的单一面板布局
+        function initYearNavigation() {
+            yearButtons.forEach(button => {
+                button.addEventListener('click', handleYearClick);
+                button.addEventListener('touch', handleYearClick);
+                
+                function handleYearClick() {
+                    // 移除所有按钮的active类
+                    yearButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const targetYear = button.getAttribute('data-year');
+                    
+                    // 隐藏所有年份面板
+                    yearPanels.forEach(panel => {
+                        panel.classList.remove('active');
+                        panel.style.display = 'none';
+                    });
+                    
+                    // 显示目标年份的面板
+                    const targetPanel = document.querySelector(`.year-panel[data-year="${targetYear}"]`);
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
+                        targetPanel.style.display = 'block';
+                        
+                        // 移动端自动滚动到内容区域
+                        if (window.innerWidth < 768) {
+                            const yearContent = document.getElementById('yearContent');
+                            yearContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    } else {
+                        // 显示提示信息
+                        alert(`暂无${targetYear}年的内容，敬请期待！`);
+                    }
+                }
+            });
+        }
+
+        // 绑定事件监听
+        themeToggle.addEventListener('click', toggleTheme);
+        themeToggle.addEventListener('touch', toggleTheme);
+        
+        // 监听系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('preferredTheme')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                htmlElement.setAttribute('data-theme', newTheme);
+                updateUI(newTheme);
+            }
+        });
+
+        // 初始化函数
+        function init() {
+            initTheme();
+            initYearNavigation();
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
