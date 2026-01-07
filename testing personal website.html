@@ -11,6 +11,9 @@
             padding: 0;
             box-sizing: border-box;
             transition: all 0.3s ease;
+            /* 全局设置文本两端对齐 */
+            text-align: justify;
+            text-justify: inter-word; /* 优化英文两端对齐效果 */
         }
 
         /* Responsive Variables */
@@ -37,6 +40,10 @@
             --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.08);
             --xiaohongshu-color: #ff2442;
+            /* 新增：行高变量，统一文本行高 */
+            --line-height-base: 1.7;
+            --line-height-tight: 1.5;
+            --line-height-loose: 1.8;
         }
 
         [data-theme="dark"] {
@@ -59,14 +66,15 @@
         }
 
         body {
-            /* 修改为中文字体栈，优先使用系统中文字体 */
+            /* 中文字体栈，优先使用系统中文字体 */
             font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Heiti SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             padding: 1rem;
             background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
-            line-height: 1.5;
+            line-height: var(--line-height-base);
+            color: var(--text-color);
         }
 
         /* Container */
@@ -99,6 +107,8 @@
             color: transparent;
             flex: 1;
             min-width: 200px;
+            text-align: left; /* 标题左对齐 */
+            line-height: var(--line-height-tight);
         }
 
         .theme-toggle {
@@ -113,6 +123,7 @@
             box-shadow: var(--shadow-sm);
             min-width: 120px;
             flex-shrink: 0;
+            text-align: center; /* 按钮文本居中 */
         }
 
         .theme-toggle:hover {
@@ -151,7 +162,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            text-align: center; /* 年份按钮文本居中 */
             box-shadow: var(--shadow-sm);
             flex-shrink: 0;
         }
@@ -191,6 +202,13 @@
 
         .year-panel.active {
             display: block;
+            animation: fadeIn 0.5s ease-in-out; /* 新增：淡入动画 */
+        }
+
+        /* 新增：淡入动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .year-panel h2 {
@@ -200,11 +218,13 @@
             margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 3px solid var(--accent-color);
+            text-align: left; /* 年份标题左对齐 */
+            line-height: var(--line-height-tight);
         }
 
         .year-panel-intro {
             font-size: clamp(1rem, 3vw, 1.1rem);
-            line-height: 1.8;
+            line-height: var(--line-height-loose);
             margin-bottom: 2rem;
             color: var(--text-color);
         }
@@ -240,7 +260,7 @@
             margin-bottom: 1rem;
             color: var(--year-btn-active);
             display: block;
-            text-align: center;
+            text-align: center; /* 图标居中 */
         }
 
         .media-item-title {
@@ -248,15 +268,17 @@
             font-weight: 600;
             color: var(--text-color);
             margin-bottom: 1rem;
-            text-align: center;
+            text-align: center; /* 媒体项标题居中 */
+            line-height: var(--line-height-tight);
         }
 
         .media-item-desc {
             font-size: clamp(0.9rem, 3vw, 1rem);
             color: var(--text-color);
             opacity: 0.9;
-            line-height: 1.7;
-            text-align: center;
+            line-height: var(--line-height-loose);
+            text-align: justify; /* 描述文本两端对齐 */
+            text-justify: inter-word;
         }
 
         /* Photo Preview */
@@ -270,7 +292,7 @@
             transition: all 0.3s ease;
         }
 
-        /* 新增：视频预览样式 */
+        /* 视频预览样式 */
         .video-preview {
             width: 100%;
             height: 180px;
@@ -294,6 +316,7 @@
             color: var(--text-color);
             font-size: clamp(0.8rem, 2vw, 0.9rem);
             opacity: 0.8;
+            text-align: center; /* 主题状态文本居中 */
         }
 
         /* Google Maps Section - RESPONSIVE */
@@ -311,6 +334,8 @@
             font-weight: 700;
             color: var(--year-btn-active);
             margin-bottom: 1.5rem;
+            text-align: left; /* 地图标题左对齐 */
+            line-height: var(--line-height-tight);
         }
 
         .map-container {
@@ -336,7 +361,7 @@
             margin-top: 1.5rem;
             font-size: clamp(0.9rem, 3vw, 1rem);
             color: var(--text-color);
-            line-height: 1.7;
+            line-height: var(--line-height-loose);
         }
 
         /* Xiaohongshu Note Style */
@@ -367,6 +392,8 @@
             font-size: clamp(1.2rem, 4vw, 1.5rem);
             margin-bottom: 1.5rem;
             font-weight: 600;
+            text-align: left; /* 页脚标题左对齐 */
+            line-height: var(--line-height-tight);
         }
 
         .social-links {
@@ -387,6 +414,7 @@
             padding: 0.5rem 0;
             min-height: 44px;
             align-items: center;
+            text-align: left; /* 社交链接文本左对齐 */
         }
 
         .social-link:hover {
@@ -400,6 +428,7 @@
             opacity: 0.7;
             border-top: 1px solid rgba(255,255,255,0.1);
             padding-top: 1.5rem;
+            text-align: center; /* 版权文本居中 */
         }
 
         /* Scrollbar Styling */
@@ -425,6 +454,8 @@
         @media (max-width: 575.98px) {
             body {
                 padding: 0.5rem;
+                /* 移动端优化两端对齐 */
+                text-justify: inter-character;
             }
             
             header {
@@ -454,6 +485,11 @@
             
             .map-section {
                 padding: 1.2rem;
+            }
+
+            /* 移动端小屏幕优化文本间距 */
+            .media-item-desc, .year-panel-intro, .map-description {
+                letter-spacing: 0.2px;
             }
         }
 
@@ -498,6 +534,11 @@
             .year-content {
                 box-shadow: none;
                 border: 1px solid #000;
+            }
+
+            /* 打印时恢复默认对齐 */
+            * {
+                text-align: left !important;
             }
         }
     </style>
@@ -574,13 +615,11 @@
                 </div>
             </div>
 
-            <!-- 2025 Content Panel - 添加了视频 -->
+            <!-- 2025 Content Panel -->
             <div class="year-panel" data-year="2025">
                 <h2>2025 · Breaking Through and Transforming</h2>
                 <div class="year-panel-intro">
-                    <p>2025 was a year full of challenges and breakthroughs. Faced with various difficulties and opportunities, I chose to rise to the challenges and ultimately achieved several important life goals. The struggles and persistence of this year allowed me to complete the leap from quantitative to qualitative change.</p>
-                    <p><strong>Keywords of the Year:</strong> Struggle, Breakthrough, Achievement, Persistence, Transformation, Transcendence</p>
-                    <p>The process of breaking through and transforming is always accompanied by growing pains, but only through hardships can we embrace a broader sky. This year taught me that as long as the direction is correct, every effort will not be in vain.</p>
+                    <p>2025 was a year full of surprises and unexpected moments. I made it onto the Dean’s List for the first time with a GPA of 3.89. Along the way, I also had a few life changes getting two front teeth removed, wearing braces, and moving to a new place.</p>
                 </div>
                 
                 <div class="media-section">
@@ -588,7 +627,7 @@
                         <div class="media-item-icon">📝</div>
                         <div class="media-item-title">Annual Notes</div>
                         <div class="media-item-desc">
-                            Recorded 48 growth reflections, focusing on career development, personal ability improvement and mindset adjustment. During the days of struggle, words became the best companion and source of strength.
+                            This year’s recap also wouldn’t be complete without some “memorable” everyday moments like unexpectedly meeting a cockroach in the middle of an assignment. It put on quite a performance, playing dead and acting pitiful, before one efficient slap brought the show to an end. And naturally, there were encounters with certain people who seemed to function perfectly fine just without the inconvenience of long-term memory, making even a goldfish look impressive by comparison.
                         </div>
                     </div>
                     
@@ -601,7 +640,7 @@
                     </div>
                     
                     <div class="media-item">
-                        <!-- 新增：2025年视频内容 -->
+                        <!-- 2025年视频内容 -->
                         <video controls class="video-preview" poster="mmexport1767184584078.jpg">
                             <source src="lv_0_20260101035351.mp4" type="video/mp4">
                             Your browser does not support the video tag.
